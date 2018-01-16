@@ -1,6 +1,9 @@
 const express = require("express");
 const user = require("../models/user");
 const { encode, compare } = require("../auth/pwd")
+const jwt = require('jsonwebtoken')
+
+const SECRET = "coucou"
 
 const router = express.Router();
 
@@ -34,11 +37,16 @@ router.post("/login", (req, res) => {
       }
 
       //password === userpassword
-      return compare(password, user.password).then(authorized => 
-        authorized 
-          ? res.json(user) 
-          : res.status('401').json({error: 'bad password'}) // le mot de passe envoyé ne correspond pas au mot de passe stocké en BDD
-      );
+      return compare(password, user.password).then(authorized => {
+        const {id, firstname, lastname, email, role } = user;
+        if(authorized) {
+          // generation du token
+          const token = jwt.sign({ id, email, role }, SECRET);
+          return res.json({token, user: { id, firstname, lastname }}) 
+        } else {
+          return res.status('401').json({error: 'bad password'}) // le mot de passe envoyé ne correspond pas au mot de passe stocké en BDD
+        }
+      })
     })
     .catch(err => res.json(err));
 });

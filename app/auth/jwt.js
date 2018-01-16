@@ -25,7 +25,6 @@ exports.checkTokenMiddleware = (req, res, next) => {
     }
 
     // 4. get id from token payload
-
     // 5. get user from id
     // 6. enrichit le req ave le user recupéré
     // 7. call next()

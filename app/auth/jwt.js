@@ -25,7 +25,7 @@ exports.checkTokenMiddleware = (req, res, next) => {
     }
 
     // 4. get id from token payload
-    console.log('decodedToken : ', decodedToken)
+    //console.log('decodedToken : ', decodedToken)
 
     // 5. get user from id
     user.getById(decodedToken.id).then( user => {

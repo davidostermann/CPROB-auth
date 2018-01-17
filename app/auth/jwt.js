@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const user = 
+const user = require('../models/user')
 
 const extractBearerToken = headerValue => {
   if (typeof headerValue !== "string") {
@@ -15,22 +15,32 @@ exports.checkTokenMiddleware = (req, res, next) => {
 
   // 2. verifier que l'extraction a bien generé un token //if(!token) 
   if(!token) {
-    return res.status(403).json({error:'Bad token'})
+    return res.status(403).json({error:'Bad token I'})
   }
 
   // 3.verifier la qualité du token via jwt.verify
-  jwt.verify(token, "coucou", (err, token) => {
-    if(err) {
-      return res.status(403).json({ error: "2. Bad token" });
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    if (err) {
+      return res.status(403).json({ error: "Bad token II" });
     }
 
     // 4. get id from token payload
+    console.log('decodedToken : ', decodedToken)
+
     // 5. get user from id
-    // 6. enrichit le req ave le user recupéré
-    // 7. call next()
+    user.getById(decodedToken.id).then( user => {
+      if(!user) {
+        return res.status(403).json({ error: "Bad user" });
+      }
 
+      // 6. enrichit le req ave le user recupéré
+      req.user = user
 
-    next()
+      // 7. call next()
+      next()
+
+    }).catch( err => res.json(err))
+
   });
 
 }

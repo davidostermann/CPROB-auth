@@ -1,3 +1,7 @@
+if(!process.env.production) {
+  require("dotenv").config();
+}
+
 const express = require('express')
 const cors = require('cors')
 
@@ -5,6 +9,8 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+
+console.log('JWT_SECRET : ', process.env.JWT_SECRET)
 
 // middleware to escape simple quotes
 // I use simple quotes in SQL queries (cf. model)

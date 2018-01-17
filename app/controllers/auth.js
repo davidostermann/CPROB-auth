@@ -3,8 +3,6 @@ const user = require("../models/user");
 const { encode, compare } = require("../auth/pwd")
 const jwt = require('jsonwebtoken')
 
-const SECRET = "coucou"
-
 const router = express.Router();
 
 router.post("/register", (req, res) => {
@@ -41,7 +39,7 @@ router.post("/login", (req, res) => {
         const {id, firstname, lastname, email, role } = user;
         if(authorized) {
           // generation du token
-          const token = jwt.sign({ id, email, role }, SECRET);
+          const token = jwt.sign({ id, email, role }, process.env.JWT_SECRET, { expiresIn: '3h' });
           return res.json({token, user: { id, firstname, lastname }}) 
         } else {
           return res.status('401').json({error: 'bad password'}) // le mot de passe envoyé ne correspond pas au mot de passe stocké en BDD

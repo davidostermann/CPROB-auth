@@ -1,9 +1,10 @@
 const express = require('express')
 const model = require('../models/user')
 const { checkTokenMiddleware } = require('../auth/jwt')
+const { isAdmin } = require('../auth/authorizations')
 
 module.exports = express.Router()
-  .get('/', checkTokenMiddleware, (req, res) => {
+  .get('/', checkTokenMiddleware, isAdmin, (req, res) => {
     model.getUsers()
       .then(result => res.json(result))
       .catch(err => res.json(err))

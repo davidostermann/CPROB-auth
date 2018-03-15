@@ -10,4 +10,8 @@ db.connect((err) => {
   console.log('DB CONNECTED !!!!')
 })
 
+db.unwrapQuery = sql => {
+  return db.query(sql).then(results => results.rows);
+};
+
 module.exports = db
